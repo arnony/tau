@@ -18,6 +18,9 @@ int paddingY = 0;
 
 // ControlP5 instance
 ControlP5 cp5;
+controlP5.Button submitWebPort; 
+controlP5.Textfield webPortField;
+PortFieldSubmitButtonListener pfListener = new PortFieldSubmitButtonListener();
 
 // setup functions
 
@@ -43,10 +46,10 @@ void setupControlP5() {
 
   // add a scrollable list
   ScrollableList ps = cp5.addScrollableList("selectPort")
-    .setPosition(260, int(9.5 * paddingY)) //paddingX, 52*height/100)
+    .setPosition(260, int(11.5 * paddingY)) //paddingX, 52*height/100)
     .setSize(200, 100)
     .setBarHeight(20)
-    .setItemHeight(10)
+    .setItemHeight(20)
     .addItems(portsList);
 
   if (portsList.size()==1) {
@@ -54,34 +57,68 @@ void setupControlP5() {
     selectPort(0);
     ps.hide();
   }
+  
+  //add webPorts selector:
+  // field and button. field content, by default and if fails - 8081.
+    webPortField = cp5.addTextfield("SetWebPort").setPosition(300, 5 * paddingY-15).setSize(60, 20).setColorBackground(color(255,255,255)).setColor(color(255, 100, 100)).setInputFilter(ControlP5.FLOAT).setAutoClear(false).setColorValue(color(0,0,0)).setColorActive(0xff00ff00).setId(2);
+    //.setColorBackground(logoBlue);
+  webPortField.getCaptionLabel().setVisible(false);
+  //webPortField.onRelease(fieldsCLICKEDListener_newLocationGUI);
+  webPortField.setText(nf(serverPort,4,0));
+
+
+ //submit button:
+  submitWebPort = cp5.addButton("newLocSubmit").setLabel("START").setPosition(390, 5 * paddingY-15).setSize(70, 20).setId(3);
+  submitWebPort.getCaptionLabel().toUpperCase(false);
+  submitWebPort.onRelease(pfListener);
 }
 
+
+class PortFieldSubmitButtonListener implements CallbackListener {
+  void controlEvent(CallbackEvent e) {
+    println("PortFieldSubmitButtonListener event + text"+ e + ", " + webPortField.getText()); 
+    serverPort = Integer.parseInt(webPortField.getText());
+    connectWSS();
+   }
+}
+
+void connectWSS(){
+   wsServer = new WebsocketServer(this, serverPort, "/");
+}
 void drawText() {
 
   fill(yellow);
   textSize(textSizeTitle);
-  text("Serial-Web Connector ver: " + versionNumber +"\r\n(Processing 4 code / exe, for P5JS projects)", paddingX, 2 * paddingY);
+  text("Serial To WebSocket Connector" +"\r\n(Processing 4 code / exe for P5JS projects)", paddingX, 2 * paddingY);
 
+    //show version:
+    pushMatrix();
+    translate(width-100, height-20);
+    fill(gray);
+    textSize(15);
+    text ("Version: "+ versionNumber, 0, 0);
+    popMatrix();
 
 
   //Web socket:
-  int y1 = 4 * paddingY;
+  int y1 = 5 * paddingY;
   fill(yellow);
   textSize(textSizeTitle);
   text("Web socket interface", paddingX, y1);
 
   fill(gray);
   textSize(textSizeParagraph);
-  text("Local IP address is: " + localIP +" (or 127.0.0.1 or localhost)", paddingX, 1 * paddingY + y1);
-  text("Websocket port is: " + serverPort, paddingX, 2 * paddingY+ y1);
-  text("Last ws in: " + lastWSMsgIn, 20+paddingX, 3 * paddingY + y1);
-  //text("(Limited to 3 chars)" , 120+paddingX, 3 * paddingY + y1);
-  text("Last ws out: " + lastWSMsgOut, 20+paddingX, 4 * paddingY + y1);
+  text("Use ports 8081, 8082...", 300, 1 * paddingY + y1);
+  text("Websocket listens at:   ws://" + localIP +":"+serverPort, paddingX, 2 * paddingY + y1);
+  text("(Can be reached locally at localhost or 127.0.0.1)" , paddingX, 3 * paddingY+ y1);
+  text("Last ws in: " + lastWSMsgIn, 20+paddingX, 4 * paddingY + y1);
+  //text("(Limited to 3 chars)" , 120+paddingX, 4 * paddingY + y1);
+  text("Last ws out: " + lastWSMsgOut, 20+paddingX, 5 * paddingY + y1);
 
 
   // Serial port:
 
-  int y2 = y1+6*paddingY;
+  int y2 = y1+7*paddingY;
   fill(yellow);
   textSize(textSizeTitle);
   String doSelectText = ":";

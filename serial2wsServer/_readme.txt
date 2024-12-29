@@ -21,3 +21,7 @@ https://www.dropbox.com/scl/fi/k0odyt79zcv5r90knuake/SerialAndOLED.ino?rlkey=g62
 
 
 Arnon Yaar, 12.2024
+
+
+Version history - 
+v.2.1 Allows manual selection of the port. This is useful if you intend to run multiple instances of the server on the same PC: each can be connected to a dedicated serial port and to a dedicated P5JS clients

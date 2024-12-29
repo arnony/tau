@@ -1,6 +1,6 @@
 int now = 0;
 int deltaTime = 0;
-String versionNumber = "2.0.0";
+String versionNumber = "2.1";
 
 String alertMsg = "";
 boolean err = false;
@@ -13,7 +13,7 @@ void setup() {
 
   portName = "none";
 
-  wsServer = new WebsocketServer(this, serverPort, "/");
+ // wsServer = new WebsocketServer(this, serverPort, "/");
 
   setupColors();
   setupText();
