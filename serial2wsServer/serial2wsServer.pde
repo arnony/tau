@@ -1,6 +1,6 @@
 int now = 0;
 int deltaTime = 0;
-String versionNumber = "2.1";
+String versionNumber = "2.1.1";
 
 String alertMsg = "";
 boolean err = false;

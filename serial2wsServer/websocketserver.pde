@@ -44,5 +44,5 @@ void webSocketServerEvent(String msg) { //incoming json message from the ws clie
 
 void wsWrite(String msg) {
   lastWSMsgOut = msg;
-  wsServer.sendMessage(msg);
+  if (wsServer !=null) wsServer.sendMessage(msg);
 }
